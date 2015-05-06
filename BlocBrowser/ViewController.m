@@ -25,14 +25,14 @@
 
 @implementation ViewController
 
-- (void)viewDidLoad {
+- (void) viewDidLoad {
     [super viewDidLoad];
     // Do any additional setup after loading the view, typically from a nib.
     self.edgesForExtendedLayout = UIRectEdgeNone;
     
     self.activityIndicator = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleGray];
     self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithCustomView:self.activityIndicator];
-    
+    [self sayHi];
 }
 
 - (void) loadView{
@@ -128,9 +128,10 @@
     
     NSString *URLString = textField.text;
     NSRange rangeSearchingForSpace = [URLString rangeOfString:@" "];
+    NSRange rangeSearchingForDot = [URLString rangeOfString:@"."];
 
-    // if URLString has no spaces in it do this:
-    if (rangeSearchingForSpace.location > 100000){
+    // if URLString has no spaces & does have a dot in it do this:
+    if (rangeSearchingForSpace.location > 100000 && rangeSearchingForDot.location < 100000){
         NSURL *URL = [NSURL URLWithString:URLString];
     
         if (!URL.scheme){
@@ -161,7 +162,7 @@
 
 #pragma mark - WKNavigationDelegate
 
-- (void)webView:(WKWebView *)webView didFailProvisionalNavigation:(WKNavigation *) navigation withError:(NSError *)error {
+- (void) webView:(WKWebView *)webView didFailProvisionalNavigation:(WKNavigation *) navigation withError:(NSError *)error {
         [self webView:webView didFailNavigation:navigation withError:error];
     [self updateButtonsAndTitle];
     }
@@ -179,11 +180,11 @@
     [self updateButtonsAndTitle];
 }
 
-- (void)webView:(WKWebView *)webView didStartProvisionalNavigation:(WKNavigation *)navigation {
+- (void) webView:(WKWebView *)webView didStartProvisionalNavigation:(WKNavigation *)navigation {
     [self updateButtonsAndTitle];
 }
 
-- (void)webView:(WKWebView *)webView didFinishNavigation:(WKNavigation *)navigation {
+- (void) webView:(WKWebView *)webView didFinishNavigation:(WKNavigation *)navigation {
     [self updateButtonsAndTitle];
 }
 
@@ -222,6 +223,7 @@
     [self addButtonTargets];
     self.textField.text = nil;
     [self updateButtonsAndTitle];
+    [self sayHi];
 }
 
 - (void) addButtonTargets {
@@ -247,6 +249,15 @@
     [self.reloadButton addTarget:self.webView action:@selector(reload) forControlEvents:UIControlEventTouchUpInside];
     
     
+}
+
+- (void) sayHi {
+    UIAlertController *alert = [UIAlertController alertControllerWithTitle:NSLocalizedString(@"BlocBrowser", @"Name of App") message: @"Welcome back to BlocBrowser!" preferredStyle:UIAlertControllerStyleAlert];
+    
+    UIAlertAction *okAction = [UIAlertAction actionWithTitle:NSLocalizedString(@"Ready to Browse", @"everything is ok") style:UIAlertActionStyleCancel handler:nil];
+    
+    [alert addAction:okAction];
+    [self presentViewController:alert animated:YES completion:nil];
 }
 
 @end
