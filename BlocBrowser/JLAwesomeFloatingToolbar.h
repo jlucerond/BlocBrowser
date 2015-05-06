@@ -18,6 +18,7 @@
 
 - (void) floatingToolbar: (JLAwesomeFloatingToolbar *)toolbar didSelectButtonWithTitle: (NSString *)title;
 
+- (void) floatingToolbar:(JLAwesomeFloatingToolbar *)toolbar didTryToPanWithOffset: (CGPoint) offset;
 @end
 
 // interface for toolbar?

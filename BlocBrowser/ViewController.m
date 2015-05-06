@@ -39,6 +39,7 @@
     self.activityIndicator = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleGray];
     self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithCustomView:self.activityIndicator];
     [self sayHi];
+    
 }
 
 - (void) loadView{
@@ -75,13 +76,14 @@
     CGFloat width = CGRectGetWidth(self.view.bounds);
     CGFloat browserHeight = CGRectGetHeight(self.view.bounds) - itemHeight;
     
+    // for some reason, the awesomeToolbar moves to the background when the site gets reloaded. I can see it in front of the textField, but it's hidden. Any ideas how to fix this?
     NSInteger myCGFloatX = (CGRectGetWidth(self.view.bounds) - 280)/2;
     NSInteger myCGFloatY = CGRectGetHeight(self.view.bounds) - 60;
     
     // now assign frames
     self.textField.frame = CGRectMake(0, 0, width, itemHeight);
     self.webView.frame = CGRectMake(0, CGRectGetMaxY(self.textField.frame), width, browserHeight);
-    self.awesomeToolbar.frame = CGRectMake(myCGFloatX, myCGFloatY, 280, 60);
+    self.awesomeToolbar.frame = CGRectMake(10, 10, 280, 60);
     
 }
 
@@ -186,6 +188,8 @@
     self.webView = newWebView;
     self.textField.text = nil;
     [self updateButtonsAndTitle];
+    [self viewWillLayoutSubviews];
+    NSLog(@"reset");
     [self sayHi];
 }
 
@@ -196,6 +200,7 @@
     
     [alert addAction:okAction];
     [self presentViewController:alert animated:YES completion:nil];
+    [self viewWillLayoutSubviews];
 }
 
 #pragma mark - AwesomeFloatingToolbarDelegate
@@ -215,6 +220,17 @@
     
     else if ([title isEqual:kJLWebBrowserRefreshString]){
         [self.webView reload];
+    }
+}
+
+- (void) floatingToolbar:(JLAwesomeFloatingToolbar *)toolbar didTryToPanWithOffset:(CGPoint)offset {
+    CGPoint startingPoint = toolbar.frame.origin;
+    CGPoint newPoint = CGPointMake(startingPoint.x + offset.x, startingPoint.y + offset.y);
+    
+    CGRect potentialNewFrame = CGRectMake(newPoint.x, newPoint.y, CGRectGetWidth(toolbar.frame), CGRectGetHeight(toolbar.frame));
+    
+    if (CGRectContainsRect(self.view.bounds, potentialNewFrame)){
+        toolbar.frame = potentialNewFrame;
     }
 }
 

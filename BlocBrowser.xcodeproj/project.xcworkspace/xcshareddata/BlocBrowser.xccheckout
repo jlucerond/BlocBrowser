@@ -7,14 +7,14 @@
 	<key>IDESourceControlProjectIdentifier</key>
 	<string>FB137E07-F6B7-42FE-B843-5D3DC8F05D7B</string>
 	<key>IDESourceControlProjectName</key>
-	<string>BlocBrowser</string>
+	<string>project</string>
 	<key>IDESourceControlProjectOriginsDictionary</key>
 	<dict>
 		<key>A7B886AE4C054D3B5E6CA9C1D486BE0BF20E8FA3</key>
 		<string>https://github.com/jlucerond/BlocBrowser.git</string>
 	</dict>
 	<key>IDESourceControlProjectPath</key>
-	<string>BlocBrowser.xcodeproj</string>
+	<string>BlocBrowser.xcodeproj/project.xcworkspace</string>
 	<key>IDESourceControlProjectRelativeInstallPathDictionary</key>
 	<dict>
 		<key>A7B886AE4C054D3B5E6CA9C1D486BE0BF20E8FA3</key>
