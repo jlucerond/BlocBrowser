@@ -10,6 +10,9 @@
 
 @interface ViewController : UIViewController
 
+// why does this need to be in the header file/ public access?
+- (void) resetWebView;
+
 
 @end
 

@@ -68,18 +68,21 @@
     
     self.reloadButton = [UIButton buttonWithType:UIButtonTypeSystem];
     [self.reloadButton setEnabled:NO];
+
+    // COMMENTING THIS OUT IN CASE I NEED TO RESET THESE
+//    [self.backButton setTitle:NSLocalizedString(@"Back", @"Back command") forState:UIControlStateNormal];
+//    [self.backButton addTarget:self.webView action:@selector(goBack) forControlEvents:UIControlEventTouchUpInside];
+//    
+//    [self.forwardButton setTitle:NSLocalizedString(@"Forward", @"Forward command") forState:UIControlStateNormal];
+//    [self.forwardButton addTarget:self.webView action:@selector(goForward) forControlEvents:UIControlEventTouchUpInside];
+//    
+//    [self.stopButton setTitle:NSLocalizedString(@"Stop", @"Stop command") forState:UIControlStateNormal];
+//    [self.stopButton addTarget:self.webView action:@selector(stopLoading) forControlEvents:UIControlEventTouchUpInside];
+//    
+//    [self.reloadButton setTitle:NSLocalizedString(@"Reload", @"Reload command") forState: UIControlStateNormal];
+//    [self.reloadButton addTarget:self.webView action:@selector(reload) forControlEvents:UIControlEventTouchUpInside];
     
-    [self.backButton setTitle:NSLocalizedString(@"Back", @"Back command") forState:UIControlStateNormal];
-    [self.backButton addTarget:self.webView action:@selector(goBack) forControlEvents:UIControlEventTouchUpInside];
-    
-    [self.forwardButton setTitle:NSLocalizedString(@"Forward", @"Forward command") forState:UIControlStateNormal];
-    [self.forwardButton addTarget:self.webView action:@selector(goForward) forControlEvents:UIControlEventTouchUpInside];
-    
-    [self.stopButton setTitle:NSLocalizedString(@"Stop", @"Stop command") forState:UIControlStateNormal];
-    [self.stopButton addTarget:self.webView action:@selector(stopLoading) forControlEvents:UIControlEventTouchUpInside];
-    
-    [self.reloadButton setTitle:NSLocalizedString(@"Reload", @"Reload command") forState: UIControlStateNormal];
-    [self.reloadButton addTarget:self.webView action:@selector(reload) forControlEvents:UIControlEventTouchUpInside];
+    [self addButtonTargets];
     
 //    simplified in the below for loop
 //    [mainView addSubview:self.textField];
@@ -199,7 +202,7 @@
     self.backButton.enabled = [self.webView canGoBack];
     self.forwardButton.enabled = [self.webView canGoForward];
     self.stopButton.enabled = self.webView.isLoading;
-    self.reloadButton.enabled = !self.webView.isLoading;
+    self.reloadButton.enabled = !self.webView.isLoading && self.webView.URL;
     
     if (self.webView.isLoading){
             [self.activityIndicator startAnimating];
@@ -207,6 +210,43 @@
     else {
             [self.activityIndicator stopAnimating];
     }
+}
+
+- (void) resetWebView{
+    [self.webView removeFromSuperview];
+    
+    WKWebView *newWebView = [[WKWebView alloc]init];
+    newWebView.navigationDelegate = self;
+    [self.view addSubview:newWebView];
+    self.webView = newWebView;
+    [self addButtonTargets];
+    self.textField.text = nil;
+    [self updateButtonsAndTitle];
+}
+
+- (void) addButtonTargets {
+    
+    // question for mark- so the reason that we need to reset these is because they would respond to the previous webview? Since we really only have one webview, is it technically because we've created a new object, "webview" and that object responds to a new place in memory? And since the buttons reference an old place in memory, the app crashes?
+    
+    for (UIButton *button in @[self.backButton, self.forwardButton, self. stopButton, self.reloadButton]){
+        [button removeTarget:nil action:NULL forControlEvents:UIControlEventTouchUpInside];
+    }
+    
+    // question for mark- if i copy and paste all 8 of these methods below, I think the code will work, but I assume Bloc leaves the "setTitle" ones in didLoad because the title doesn't need to be reloaded, just set once, is that correct? I'm leaving them in here for now so I can test the code with them here, but I assume this wouldn't be best practice
+    
+    [self.backButton setTitle:NSLocalizedString(@"Back", @"Back command") forState:UIControlStateNormal];
+    [self.backButton addTarget:self.webView action:@selector(goBack) forControlEvents:UIControlEventTouchUpInside];
+    
+    [self.forwardButton setTitle:NSLocalizedString(@"Forward", @"Forward command") forState:UIControlStateNormal];
+    [self.forwardButton addTarget:self.webView action:@selector(goForward) forControlEvents:UIControlEventTouchUpInside];
+    
+    [self.stopButton setTitle:NSLocalizedString(@"Stop", @"Stop command") forState:UIControlStateNormal];
+    [self.stopButton addTarget:self.webView action:@selector(stopLoading) forControlEvents:UIControlEventTouchUpInside];
+    
+    [self.reloadButton setTitle:NSLocalizedString(@"Reload", @"Reload command") forState: UIControlStateNormal];
+    [self.reloadButton addTarget:self.webView action:@selector(reload) forControlEvents:UIControlEventTouchUpInside];
+    
+    
 }
 
 @end
