@@ -37,9 +37,7 @@
     self.edgesForExtendedLayout = UIRectEdgeNone;
     
     self.activityIndicator = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleGray];
-    self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithCustomView:self.activityIndicator];
-    [self sayHi];
-    
+    self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithCustomView:self.activityIndicator];    
 }
 
 - (void) loadView{
@@ -190,7 +188,6 @@
     [self loadView];
     [self viewWillLayoutSubviews];
     NSLog(@"reset");
-    [self sayHi];
 }
 
 - (void) sayHi {
