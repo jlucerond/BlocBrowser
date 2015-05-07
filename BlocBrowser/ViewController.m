@@ -180,23 +180,22 @@
     
     WKWebView *newWebView = [[WKWebView alloc]init];
     newWebView.navigationDelegate = self;
-    [self.view addSubview:newWebView];
     self.webView = newWebView;
     self.textField.text = nil;
     [self updateButtonsAndTitle];
-    // note for mark- this was my fix. I ended up loading the view and using view will layout subviews in order to reset the app. It works, but is this good practice?
-    [self loadView];
-    [self viewWillLayoutSubviews];
+    [self.view addSubview:newWebView];
+    [self.view sendSubviewToBack:newWebView];
+
     NSLog(@"reset");
 }
 
 - (void) sayHi {
-    UIAlertController *alert = [UIAlertController alertControllerWithTitle:NSLocalizedString(@"BlocBrowser", @"Name of App") message: @"Welcome back to BlocBrowser!" preferredStyle:UIAlertControllerStyleAlert];
-    
-    UIAlertAction *okAction = [UIAlertAction actionWithTitle:NSLocalizedString(@"Ready to Browse", @"everything is ok") style:UIAlertActionStyleCancel handler:nil];
-    
-    [alert addAction:okAction];
-    [self presentViewController:alert animated:YES completion:nil];
+//    UIAlertController *alert = [UIAlertController alertControllerWithTitle:NSLocalizedString(@"BlocBrowser", @"Name of App") message: @"Welcome back to BlocBrowser!" preferredStyle:UIAlertControllerStyleAlert];
+//    
+//    UIAlertAction *okAction = [UIAlertAction actionWithTitle:NSLocalizedString(@"Ready to Browse", @"everything is ok") style:UIAlertActionStyleCancel handler:nil];
+//    
+//    [alert addAction:okAction];
+//    [self presentViewController:alert animated:YES completion:nil];
 }
 
 #pragma mark - AwesomeFloatingToolbarDelegate
@@ -228,6 +227,22 @@
     if (CGRectContainsRect(self.view.bounds, potentialNewFrame)){
         toolbar.frame = potentialNewFrame;
     }
+}
+
+// GOT STUCK FOR THREE HOURS CAN'T FIGURE OUT WHAT TO DO NOW
+- (void)floatingToolbar:(JLAwesomeFloatingToolbar *)toolbar didTryToPinch:(CGFloat)scale {
+    
+    // this is one of the things that I googled and didn't really understand
+//    toolbar.transform = CGAffineTransformScale(toolbar.transform, 100, 100);
+//    self.awesomeToolbar.frame = toolbar.frame;
+    
+    // this was my best attempt at trying to do this by myself
+    // for some reason, the frame resets to the bottom of the screen every time I run this. I can't find any other CGRect that works better than .frame
+    CGRect currentFrame = toolbar.frame;
+    
+    CGRect newFrame = CGRectMake(currentFrame.origin.x, currentFrame.origin.y, (currentFrame.size.width + scale), (currentFrame.size.height + scale));
+    
+    self.awesomeToolbar.frame = newFrame;
 }
 
 @end

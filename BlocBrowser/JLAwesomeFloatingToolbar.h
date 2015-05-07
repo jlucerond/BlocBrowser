@@ -10,16 +10,24 @@
 
 @class  JLAwesomeFloatingToolbar;
 
+// note for me
+// messages that the class generates and sends to the ViewController (in this case, could be anywhere else)
+
 @protocol JLAwesomeFloatingToolbarDelegate <NSObject>
 
 @optional
 
-// why is this one placed here above the @interface? is this because the methods here are optional while the ones below (after @interface) are required?
-
 - (void) floatingToolbar: (JLAwesomeFloatingToolbar *)toolbar didSelectButtonWithTitle: (NSString *)title;
 
-- (void) floatingToolbar:(JLAwesomeFloatingToolbar *)toolbar didTryToPanWithOffset: (CGPoint) offset;
+- (void) floatingToolbar: (JLAwesomeFloatingToolbar *)toolbar didTryToPanWithOffset: (CGPoint)offset;
+
+- (void) floatingToolbar: (JLAwesomeFloatingToolbar *)toolbar didTryToPinch: (CGFloat)scale;
+
 @end
+
+
+//note for me
+// things that you do to the class
 
 // interface for toolbar?
 @interface JLAwesomeFloatingToolbar : UIView
