@@ -22,9 +22,6 @@
 @property (nonatomic, strong) UIActivityIndicatorView *activityIndicator;
 @property (nonatomic, strong) JLAwesomeFloatingToolbar *awesomeToolbar;
 
-// note for Mark- I know this new curriculum is beta, but it looks like this was taken out of the previous curriculum and was never added back in (shows up for the first time in "adding the toolbar to the view controller") there's a few things in this section that need to be double checked actually, since the hw was to refactor some of the code, it looks slightly different than what was here
-@property (nonatomic, assign) NSUInteger frameCount;
-
 @end
 
 #pragma mark - UIViewController
@@ -37,7 +34,19 @@
     self.edgesForExtendedLayout = UIRectEdgeNone;
     
     self.activityIndicator = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleGray];
-    self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithCustomView:self.activityIndicator];    
+    self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithCustomView:self.activityIndicator];
+}
+
+- (void) viewWillAppear:(BOOL)animated {
+    static const CGFloat itemHeight = 50;
+    CGFloat width = CGRectGetWidth(self.view.bounds);
+    CGFloat browserHeight = CGRectGetHeight(self.view.bounds) - itemHeight;
+    NSInteger myCGFloatX = (CGRectGetWidth(self.view.bounds) - 280)/2;
+    NSInteger myCGFloatY = CGRectGetHeight(self.view.bounds) - 60;
+    // now assign frames
+    self.textField.frame = CGRectMake(0, 0, width, itemHeight);
+    self.webView.frame = CGRectMake(0, CGRectGetMaxY(self.textField.frame), width, browserHeight);
+    self.awesomeToolbar.frame = CGRectMake(myCGFloatX, myCGFloatY, 280, 60);
 }
 
 - (void) loadView{
@@ -64,23 +73,6 @@
     }
     
     self.view = mainView;
-}
-
-- (void) viewWillLayoutSubviews{
-    [super viewWillLayoutSubviews];
-    
-    // first, calculating dimensions:
-    static const CGFloat itemHeight = 50;
-    CGFloat width = CGRectGetWidth(self.view.bounds);
-    CGFloat browserHeight = CGRectGetHeight(self.view.bounds) - itemHeight;
-    NSInteger myCGFloatX = (CGRectGetWidth(self.view.bounds) - 280)/2;
-    NSInteger myCGFloatY = CGRectGetHeight(self.view.bounds) - 60;
-    
-    // now assign frames
-    self.textField.frame = CGRectMake(0, 0, width, itemHeight);
-    self.webView.frame = CGRectMake(0, CGRectGetMaxY(self.textField.frame), width, browserHeight);
-    self.awesomeToolbar.frame = CGRectMake(myCGFloatX, myCGFloatY, 280, 60);
-    
 }
 
 #pragma mark - UITextFieldDelegate
@@ -190,12 +182,12 @@
 }
 
 - (void) sayHi {
-//    UIAlertController *alert = [UIAlertController alertControllerWithTitle:NSLocalizedString(@"BlocBrowser", @"Name of App") message: @"Welcome back to BlocBrowser!" preferredStyle:UIAlertControllerStyleAlert];
-//    
-//    UIAlertAction *okAction = [UIAlertAction actionWithTitle:NSLocalizedString(@"Ready to Browse", @"everything is ok") style:UIAlertActionStyleCancel handler:nil];
-//    
-//    [alert addAction:okAction];
-//    [self presentViewController:alert animated:YES completion:nil];
+    UIAlertController *alert = [UIAlertController alertControllerWithTitle:NSLocalizedString(@"BlocBrowser", @"Name of App") message: @"Welcome back to BlocBrowser!" preferredStyle:UIAlertControllerStyleAlert];
+    
+    UIAlertAction *okAction = [UIAlertAction actionWithTitle:NSLocalizedString(@"Ready to Browse", @"everything is ok") style:UIAlertActionStyleCancel handler:nil];
+    
+    [alert addAction:okAction];
+    [self presentViewController:alert animated:YES completion:nil];
 }
 
 #pragma mark - AwesomeFloatingToolbarDelegate
@@ -229,20 +221,18 @@
     }
 }
 
-// GOT STUCK FOR THREE HOURS CAN'T FIGURE OUT WHAT TO DO NOW
-- (void)floatingToolbar:(JLAwesomeFloatingToolbar *)toolbar didTryToPinch:(CGFloat)scale {
-    
-    // this is one of the things that I googled and didn't really understand
-//    toolbar.transform = CGAffineTransformScale(toolbar.transform, 100, 100);
-//    self.awesomeToolbar.frame = toolbar.frame;
-    
-    // this was my best attempt at trying to do this by myself
-    // for some reason, the frame resets to the bottom of the screen every time I run this. I can't find any other CGRect that works better than .frame
-    CGRect currentFrame = toolbar.frame;
-    
-    CGRect newFrame = CGRectMake(currentFrame.origin.x, currentFrame.origin.y, (currentFrame.size.width + scale), (currentFrame.size.height + scale));
-    
-    self.awesomeToolbar.frame = newFrame;
+- (void) floatingToolbar:(JLAwesomeFloatingToolbar *)toolbar didTryToPinch:(CGFloat)scale {
+        
+    if (scale > 0.5 && scale < 1.5){
+        
+        CGAffineTransform transform = CGAffineTransformMakeScale(scale, scale);
+        self.awesomeToolbar.transform = transform;
+        self.awesomeToolbar.myScale = scale;
+    }
+}
+
+- (void) floatingToolbar:(JLAwesomeFloatingToolbar *)toolbar didLongPress:(CFTimeInterval)time{
+    NSLog(@"%f", time);
 }
 
 @end

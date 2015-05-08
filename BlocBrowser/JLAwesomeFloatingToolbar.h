@@ -23,8 +23,9 @@
 
 - (void) floatingToolbar: (JLAwesomeFloatingToolbar *)toolbar didTryToPinch: (CGFloat)scale;
 
-@end
+- (void) floatingToolbar: (JLAwesomeFloatingToolbar *)toolbar didLongPress: (CFTimeInterval)time;
 
+@end
 
 //note for me
 // things that you do to the class
@@ -40,5 +41,7 @@
 
 // not sure what delegate means here
 @property (nonatomic, weak) id <JLAwesomeFloatingToolbarDelegate> delegate;
+
+@property CGFloat myScale;
 
 @end

@@ -17,6 +17,8 @@
 @property (nonatomic, strong) UITapGestureRecognizer *tapGesture;
 @property (nonatomic, strong) UIPanGestureRecognizer *panGesture;
 @property (nonatomic, strong) UIPinchGestureRecognizer *pinchGesture;
+@property (nonatomic, strong) UILongPressGestureRecognizer *longPress;
+@property NSInteger myInt;
 
 @end
 
@@ -24,9 +26,11 @@
 
 @implementation JLAwesomeFloatingToolbar
 
+
 - (instancetype) initWithFourTitles:(NSArray *)titles {
     // First, call the superclass (UIView)'s initializer, to make sure we do all that setup first.
     self = [super init];
+    self.myInt = 0;
     
     // note for mark- why if (self) here? When would there not be a self?
     if (self) {
@@ -71,6 +75,8 @@
     [self addGestureRecognizer:self.panGesture];
     self.pinchGesture = [[UIPinchGestureRecognizer alloc] initWithTarget:self action:@selector(pinchFired:)];
     [self addGestureRecognizer:self.pinchGesture];
+    self.longPress = [[UILongPressGestureRecognizer alloc] initWithTarget:self action:@selector(longPress:)];
+    [self addGestureRecognizer:self.longPress];
         
     }
     return self;
@@ -136,6 +142,7 @@
             }
         }
     }
+    
 }
 
 - (void) panFired:(UIPanGestureRecognizer *)recognizer {
@@ -152,13 +159,46 @@
 
 - (void) pinchFired:(UIPinchGestureRecognizer *)recognizer {
     
-    CGFloat myScale = [recognizer scale];
+    // if i come back to this, i want to find a way to "remember" the default myScale so the view doesn't reset everytime I do a pinchFired. I'd want to probably use UIGestureRecognizerStates for this. Too tired with this project tonight.
     
-    if (recognizer.state == UIGestureRecognizerStateBegan){
-        [self.delegate floatingToolbar:self didTryToPinch:myScale];
+    self.myScale = [recognizer scale];
+    [self.delegate floatingToolbar:self didTryToPinch:self.myScale];    
+}
+
+- (void) longPress:(UILongPressGestureRecognizer *)recognizer {
+    self.colors = @[[UIColor colorWithRed:255/255.0 green:158/255.0 blue:203/255.0 alpha:1],
+                    [UIColor colorWithRed:10/255.0 green:105/255.0 blue:97/255.0 alpha:1],
+                    [UIColor colorWithRed:10/255.0 green:165/255.0 blue:164/255.0 alpha:1],
+                    [UIColor colorWithRed:255/255.0 green:179/255.0 blue:255/255.0 alpha:1]];
+    
+    NSMutableArray *labelsArray = [[NSMutableArray alloc] init];
+    
+    // Make the 4 labels
+    for (NSString *currentTitle in self.currentTitles) {
+        UILabel *label = [[UILabel alloc] init];
+        label.userInteractionEnabled = NO;
+        label.alpha = 0.25;
+        
+        NSUInteger currentTitleIndex = [self.currentTitles indexOfObject:currentTitle]; // 0 through 3
+        NSString *titleForThisLabel = [self.currentTitles objectAtIndex:currentTitleIndex];
+        UIColor *colorForThisLabel = [self.colors objectAtIndex:currentTitleIndex];
+        
+        label.textAlignment = NSTextAlignmentCenter;
+        label.font = [UIFont systemFontOfSize:10];
+        label.text = titleForThisLabel;
+        label.backgroundColor = colorForThisLabel;
+        label.textColor = [UIColor whiteColor];
+        
+        [labelsArray addObject:label];
     }
     
+    self.labels = labelsArray;
+    
+    for (UILabel *thisLabel in self.labels) {
+        [self addSubview:thisLabel];
+    }
 }
+
 
 #pragma mark - Button Enabling
 
