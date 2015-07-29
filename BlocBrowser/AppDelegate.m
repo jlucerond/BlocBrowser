@@ -49,9 +49,9 @@
 - (void)applicationDidBecomeActive:(UIApplication *)application {
     // Restart any tasks that were paused (or not yet started) while the application was inactive. If the application was previously in the background, optionally refresh the user interface.
     
-    UINavigationController *navigationVC = (UINavigationController *)self.window.rootViewController;
-    ViewController *browserVC = [[navigationVC viewControllers] firstObject];
-    [browserVC sayHi];
+//    UINavigationController *navigationVC = (UINavigationController *)self.window.rootViewController;
+//    ViewController *browserVC = [[navigationVC viewControllers] firstObject];
+//    [browserVC sayHi];
 }
 
 - (void)applicationWillTerminate:(UIApplication *)application {

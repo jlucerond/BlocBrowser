@@ -60,7 +60,7 @@
     self.textField.returnKeyType = UIReturnKeyDone;
     self.textField.autocapitalizationType = UITextAutocapitalizationTypeNone;
     self.textField.autocorrectionType = UITextAutocorrectionTypeNo;
-    self.textField.placeholder = NSLocalizedString(@"     Website URL", @"Placeholder text for web browser URL field");
+    self.textField.placeholder = NSLocalizedString(@"Website URL", @"Placeholder text for web browser URL field");
     self.textField.backgroundColor = [UIColor colorWithWhite:220/255.0f alpha:1];
     self.textField.delegate = self;
     
@@ -168,15 +168,27 @@
 }
 
 - (void) resetWebView{
+
     [self.webView removeFromSuperview];
     
-    WKWebView *newWebView = [[WKWebView alloc]init];
+    WKWebView *newWebView = [[WKWebView alloc] init];
     newWebView.navigationDelegate = self;
+    [self.view addSubview:newWebView];
+    
     self.webView = newWebView;
+    
     self.textField.text = nil;
     [self updateButtonsAndTitle];
-    [self.view addSubview:newWebView];
-    [self.view sendSubviewToBack:newWebView];
+    
+//    [self.webView removeFromSuperview];
+//    
+//    WKWebView *newWebView = [[WKWebView alloc]init];
+//    newWebView.navigationDelegate = self;
+//    self.webView = newWebView;
+//    self.textField.text = nil;
+//    [self updateButtonsAndTitle];
+//    [self.view addSubview:newWebView];
+//    [self.view sendSubviewToBack:newWebView];
 
     NSLog(@"reset");
 }
